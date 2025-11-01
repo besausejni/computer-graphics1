@@ -6,10 +6,10 @@ const scene = new THREE.Scene();
 
 // --- CAMERA ---
 const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
 );
 camera.position.set(10, 8, 10);
 camera.lookAt(0, 0, 0);
@@ -31,18 +31,18 @@ scene.add(ambientLight);
 
 // --- FUNCTION TO CREATE NUMBERED TEXTURES ---
 function createNumberTexture(text) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#f5f3f2';
-  ctx.fillRect(0, 0, 256, 256);
-  ctx.fillStyle = '#000000';
-  ctx.font = 'bold 120px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, 128, 128);
-  return new THREE.CanvasTexture(canvas);
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f5f3f2';
+    ctx.fillRect(0, 0, 256, 256);
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 120px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 128, 128);
+    return new THREE.CanvasTexture(canvas);
 }
 
 // --- MATERIALS ---
@@ -96,9 +96,9 @@ scene.add(b801);
 
 // --- EDGES FOR BUILDINGS AND ROADS ---
 function addEdges(mesh) {
-  const edges = new THREE.EdgesGeometry(mesh.geometry);
-  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: mesh.material.color }));
-  mesh.add(line);
+    const edges = new THREE.EdgesGeometry(mesh.geometry);
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: mesh.material.color }));
+    mesh.add(line);
 }
 addEdges(b301);
 addEdges(b302);
@@ -109,15 +109,13 @@ addEdges(road1);
 // --- FUNCTION TO CREATE TREES ---
 function createTree(type = 'normal') {
     let tree;
-    if(type === 'pine') {
+    if (type === 'pine') {
         const trunkGeo = new THREE.CylinderGeometry(0.1, 0.1, 1);
         const trunk = new THREE.Mesh(trunkGeo, matTrunk);
         trunk.position.y = 0.5;
-
         const crownGeo = new THREE.ConeGeometry(0.5, 1.5, 8);
         const crown = new THREE.Mesh(crownGeo, matCrown);
         crown.position.y = 1.75;
-
         tree = new THREE.Group();
         tree.add(trunk);
         tree.add(crown);
@@ -125,11 +123,9 @@ function createTree(type = 'normal') {
         const trunkGeo = new THREE.CylinderGeometry(0.15, 0.15, 1);
         const trunk = new THREE.Mesh(trunkGeo, matTrunk);
         trunk.position.y = 0.5;
-
         const crownGeo = new THREE.SphereGeometry(0.6, 12, 12);
         const crown = new THREE.Mesh(crownGeo, matLeaf);
         crown.position.y = 1.5;
-
         tree = new THREE.Group();
         tree.add(trunk);
         tree.add(crown);
@@ -137,47 +133,35 @@ function createTree(type = 'normal') {
     return tree;
 }
 
-// --- PLACE 3 RANDOM TREES (bredh + drunj normalë) ---
-function placeFewTrees() {
-    for(let i=0; i<3; i++) {
+// --- PLACE TREES RANDOMLY, JO AFËR NDËRTESAVE DHE RRUGËVE ---
+function placeTrees(count = 6) {
+    for (let i = 0; i < count; i++) {
         const type = Math.random() > 0.5 ? 'pine' : 'normal';
         const tree = createTree(type);
-
         let x = Math.random() * 10 - 5;
         let z = Math.random() * 10 - 5;
-
         // Evito ndërtesat dhe rrugët
-        if((x>2 && x<3.5 && z>-4 && z<2) || (x>-2 && x<-0.5 && z>-3 && z<2)) {
+        if ((x > 2 && x < 3.5 && z > -4 && z < 2) || (x > -2 && x < -0.5 && z > -3 && z < 2)) {
             x += Math.random() > 0.5 ? 1.5 : -1.5;
             z += Math.random() > 0.5 ? 1.5 : -1.5;
         }
-
         tree.position.set(x, 0, z);
         scene.add(tree);
     }
 }
+placeTrees(); // vendos 6 pemë rastësisht
 
-// --- PLACE 3 ADDITIONAL NORMAL TREES ---
-function placeAdditionalNormalTrees() {
-    for(let i=0; i<3; i++) {
-        const tree = createTree('normal');
+// --- DIELL I THJESHTË ---
+const sun = new THREE.PointLight(0xffee88, 1.5, 100);
+sun.position.set(20, 20, 20);
+scene.add(sun);
 
-        let x = Math.random() * 10 - 5;
-        let z = Math.random() * 10 - 5;
-
-        if((x>2 && x<3.5 && z>-4 && z<2) || (x>-2 && x<-0.5 && z>-3 && z<2)) {
-            x += Math.random() > 0.5 ? 1.5 : -1.5;
-            z += Math.random() > 0.5 ? 1.5 : -1.5;
-        }
-
-        tree.position.set(x, 0, z);
-        scene.add(tree);
-    }
-}
-
-// Vendos pemë
-placeFewTrees();
-placeAdditionalNormalTrees();
+const sunSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffee88 })
+);
+sunSphere.position.copy(sun.position);
+scene.add(sunSphere);
 
 // --- ORBIT CONTROLS ---
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -192,15 +176,15 @@ controls.update();
 
 // --- ANIMATION LOOP ---
 function animate() {
-  controls.update();
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
 }
 animate();
 
 // --- HANDLE RESIZE ---
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
