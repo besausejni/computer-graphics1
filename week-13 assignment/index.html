@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Three.js Interaction</title>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+
+    #scene {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    #cubeInfo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        z-index: 10;
+        font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- KU DO TA RENDER-OSH THREE.JS -->
+  <div id="scene"></div>
+
+  <!-- PANELI I INFORMACIONIT -->
+  <div id="cubeInfo">Click a cube to see its information here.</div>
+
+  <script type="module" src="./main.js"></script>
+
+</body>
+</html>
